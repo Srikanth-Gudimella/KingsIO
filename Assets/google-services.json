@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "244051772044",
+    "firebase_url": "https://new-game-6032d.firebaseio.com",
+    "project_id": "new-game-6032d",
+    "storage_bucket": "new-game-6032d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244051772044:android:ac7caacc8a3c6338",
+        "android_client_info": {
+          "package_name": "com.timuzgames.fidgetspinner.io"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244051772044-aovbrjofo3tg7cbstnaq9ncl2vjnra4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXRrcubMSZsZMhv_K2x-oy34oRFPqLCIs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

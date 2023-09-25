@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: d1a1e79f7b5dd4948a5f74afdcb92a6c
+timeCreated: 1522645147
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Laila
+  fontNames:
+  - Laila
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: b9cafef087de1844b98b63cb15564644, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

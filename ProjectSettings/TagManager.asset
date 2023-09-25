@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Snake
+  - Food
+  - EndPath
+  - snakeHead
+  - Obstacle
+  - ground
+  - generatePath
+  - foodType2
+  - coin
+  - food
+  - Border
+  - SpeedBooster3
+  - SpeedBooster1
+  - SpeedBooster2
+  - Obstacle2
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - snake1
+  - snake2
+  - snake3
+  - snake4
+  - snake5
+  - snake6
+  - snake7
+  - snake8
+  - snake9
+  - snake10
+  - snake11
+  - snake12
+  - snake13
+  - snake14
+  - snake15
+  - snake16
+  - snake17
+  - snake18
+  - snake19
+  - snake20
+  - snake21
+  - snake22
+  - snake23
+  - snake24
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0

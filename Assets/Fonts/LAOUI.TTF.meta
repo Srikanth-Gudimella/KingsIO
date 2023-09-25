@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: daad0137bb63d56479c56c6a3ff67692
+timeCreated: 1501049250
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Lao UI
+  fontNames:
+  - Lao UI
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: d3f8e70fa89ca7c4fb8f4cb615ca1858, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -997644103, guid: 86da5fbf2fdd742fabee71203cfbdca4, type: 3}
+  m_Name: NumberFont
+  m_EditorClassIdentifier: 
+  lineHeight: 80
+  size: 32
+  pageInfos:
+  - texture: {fileID: 2800000, guid: 7ad1f8eecbec13248b71f43b75a5164d, type: 3}
+    material: {fileID: 2100000, guid: 7b8a643304a778b448fd4dd04ef2b281, type: 2}
+  charInfos:
+  - id: 48
+    x: 0
+    y: 45
+    width: 30
+    height: 45
+    xoffset: 0
+    yoffset: 35
+    xadvance: 31
+    page: 0
+    uv0: {x: 0, y: .347826093}
+  - id: 49
+    x: 91
+    y: 0
+    width: 23
+    height: 45
+    xoffset: 0
+    yoffset: 35
+    xadvance: 24
+    page: 0
+    uv0: {x: .771186411, y: .673913062}
+  - id: 50
+    x: 89
+    y: 47
+    width: 28
+    height: 45
+    xoffset: 0
+    yoffset: 34
+    xadvance: 29
+    page: 0
+    uv0: {x: .754237294, y: .333333343}
+  - id: 51
+    x: 62
+    y: 0
+    width: 28
+    height: 46
+    xoffset: 0
+    yoffset: 34
+    xadvance: 29
+    page: 0
+    uv0: {x: .525423706, y: .666666687}
+  - id: 52
+    x: 0
+    y: 0
+    width: 31
+    height: 44
+    xoffset: 0
+    yoffset: 35
+    xadvance: 32
+    page: 0
+    uv0: {x: 0, y: .681159437}
+  - id: 53
+    x: 60
+    y: 47
+    width: 28
+    height: 46
+    xoffset: 0
+    yoffset: 34
+    xadvance: 29
+    page: 0
+    uv0: {x: .508474588, y: .326086968}
+  - id: 54
+    x: 30
+    y: 91
+    width: 29
+    height: 46
+    xoffset: 0
+    yoffset: 34
+    xadvance: 30
+    page: 0
+    uv0: {x: .254237294, y: .00724637695}
+  - id: 55
+    x: 60
+    y: 94
+    width: 27
+    height: 43
+    xoffset: 0
+    yoffset: 35
+    xadvance: 28
+    page: 0
+    uv0: {x: .508474588, y: .00724637695}
+  - id: 56
+    x: 32
+    y: 0
+    width: 29
+    height: 46
+    xoffset: 0
+    yoffset: 34
+    xadvance: 30
+    page: 0
+    uv0: {x: .271186441, y: .666666687}
+  - id: 57
+    x: 0
+    y: 91
+    width: 29
+    height: 46
+    xoffset: 0
+    yoffset: 34
+    xadvance: 30
+    page: 0
+    uv0: {x: 0, y: .00724637695}
+  - id: 32
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+    xoffset: 0
+    yoffset: 0
+    xadvance: 20
+    page: 0
+    uv0: {x: 0, y: 1}
+  - id: 9
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+    xoffset: 0
+    yoffset: 0
+    xadvance: 160
+    page: 0
+    uv0: {x: 0, y: 1}
+  kernings: []
+  inAtlas: 0
+  editorNeedRebuild: 0
