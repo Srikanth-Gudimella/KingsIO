@@ -264,17 +264,28 @@ public class GameManagerSlither : MonoBehaviour
 		playedCountForUpgrade++;
 		PlayerPrefs.SetInt("playedCountForUpgrade", playedCountForUpgrade);
 
-//       	InvokeRepeating("setPlayersLB",3,1);
-//		Invoke ("EnalbeLBList",3.1f);
+        //       	InvokeRepeating("setPlayersLB",3,1);
+        //		Invoke ("EnalbeLBList",3.1f);
         //Debug.Log ("------ Gamemanager slither start 22222222");
-		//if (PlayerPrefs.HasKey ("HelpFirstTime")) {
-		//	OnPlayButton ();
-		//} else {
-		//	Invoke ("OpenControlsPage", 0.5f);
-		//}
+        //if (PlayerPrefs.HasKey ("HelpFirstTime")) {
+        //	OnPlayButton ();
+        //} else {
+        //	Invoke ("OpenControlsPage", 0.5f);
+        //}
 
-		//OnPlayButton();
-	}
+        //OnPlayButton();
+
+        //mainMenuCanvas.SetActive(false);
+        //playerSnake.SetActive(true);
+        //playerSnake.GetComponent<Snake>().ShowPlayerName();
+        //Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
+        //MysnakeComponent.GetARandomTemplate();
+        //playerSnake.GetComponent<Snake>().ShowPlayerName();
+        //CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
+        //snakeHeadObj = playerSnake.GetComponent<Snake>().SnakeHead.gameObject;
+        //body = snakeHeadObj.GetComponent<Rigidbody>();
+
+    }
 	void OpenControlsPage()
 	{
 		ControlsPage.mee.open ();
@@ -543,7 +554,11 @@ public class GameManagerSlither : MonoBehaviour
 		if (!isLocal)
 		{
 			Debug.LogError("------ SpawnPlayer not islocal");
-
+			PlayerObj.GetComponent<PlayerNetworkRemoteSync>().NetworkData = new RemotePlayerNetworkData
+			{
+				MatchId = matchId,
+				User = user
+			};
 			//player.GetComponent<PlayerNetworkRemoteSync>().NetworkData = new RemotePlayerNetworkData
 			//{
 			//	MatchId = matchId,

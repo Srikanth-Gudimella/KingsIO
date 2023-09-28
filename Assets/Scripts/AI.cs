@@ -68,6 +68,7 @@ public class AI : MonoBehaviour
 	public int attackingPercentage=3;
     IEnumerator changeDirectionRandomlyForRoaming()
     {
+        yield break;
 //		Debug.Log ("change Direction RandomlyForRoaming");
         tempWt = waitForSecDirection1;
         //float waitTime = 10;//5

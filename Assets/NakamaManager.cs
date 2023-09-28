@@ -125,7 +125,7 @@ public class NakamaManager : MonoBehaviour
 
         // If the matchState object has any state length, decode it as a Dictionary.
         var state = matchState.State.Length > 0 ? System.Text.Encoding.UTF8.GetString(matchState.State).FromJson<Dictionary<string, string>>() : null;
-        Debug.LogError("---------- NakamaManager OnReceived Match State opcode=" + matchState.OpCode);
+       // Debug.LogError("---------- NakamaManager OnReceived Match State opcode=" + matchState.OpCode);
 
         // Decide what to do based on the Operation Code as defined in OpCodes.
         switch (matchState.OpCode)

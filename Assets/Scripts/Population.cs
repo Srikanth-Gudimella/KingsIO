@@ -14,6 +14,7 @@ public class Population : MonoBehaviour
 
     public float RangeX, RangeZ;
 	public int snakesIndex,attackingPercentage;
+    public GameObject NetworkLocalPlayerPrefab, NetworkRemotePlayerPrefab;
 
     void Awake()
     {
@@ -164,7 +165,22 @@ public class Population : MonoBehaviour
         {
             //            newsnake = (GameObject)Instantiate(snakePrefab, spwanPointt.position, snakePrefab.transform.rotation);//balu code
             //			Debug.LogError ("-----new snake spawn");
-                newsnake = (GameObject)Instantiate(snakePrefab, randomSpawnCircle, snakePrefab.transform.rotation);//srikanth added
+            if(IsMyPlayer)
+            {
+                newsnake = (GameObject)Instantiate(NetworkLocalPlayerPrefab, randomSpawnCircle, snakePrefab.transform.rotation);
+            }
+            else
+            {
+                newsnake = (GameObject)Instantiate(NetworkRemotePlayerPrefab, randomSpawnCircle, snakePrefab.transform.rotation);
+
+                //newsnake.GetComponent<PlayerNetworkRemoteSync>().NetworkData = new RemotePlayerNetworkData
+                //{
+                //    MatchId = matchId,
+                //    User = user
+                //};
+
+            }
+                //newsnake = (GameObject)Instantiate(snakePrefab, randomSpawnCircle, snakePrefab.transform.rotation);//srikanth added
            
 
             snakeparams = newsnake.GetComponent<Snake>();

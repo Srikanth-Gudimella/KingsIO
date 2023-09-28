@@ -35,12 +35,16 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
     private NakamaManager gameManager;
     //private PlayerMovementController playerMovementController;//Srikanth
     //private PlayerWeaponController playerWeaponController;//Srikanth
-    private Rigidbody2D playerRigidbody;
-    private Transform playerTransform;
+   // private Rigidbody2D playerRigidbody;
+    //private Transform playerTransform;
     private float lerpTimer;
     private Vector3 lerpFromPosition;
     private Vector3 lerpToPosition;
+    private Vector3 lerpToRotation;
+
     private bool lerpPosition;
+    public Snake ThisSnake;
+    public SnakeHead ThisSnakeHead;
 
     /// <summary>
     /// Called by Unity when this GameObject starts.
@@ -51,9 +55,10 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
         gameManager = GameObject.FindGameObjectWithTag("NakamaManager").GetComponent<NakamaManager>();
         //playerMovementController = GetComponentInChildren<PlayerMovementController>();//Srikanth
         //playerWeaponController = GetComponentInChildren<PlayerWeaponController>();//Srikanth
-        playerRigidbody = GetComponentInChildren<Rigidbody2D>();
-        playerTransform = playerRigidbody.GetComponent<Transform>();
-
+        //playerRigidbody = GetComponentInChildren<Rigidbody2D>();
+       // playerTransform = GetComponent<Snake>().SnakeHead.transform;
+        ThisSnake = GetComponent<Snake>();
+        ThisSnakeHead = ThisSnake.SnakeHead;
         // Add an event listener to handle incoming match state data.
         gameManager.NakamaConnection.Socket.ReceivedMatchState += EnqueueOnReceivedMatchState;
     }
@@ -64,19 +69,24 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
     private void LateUpdate()
     {
         // If we aren't trying to interpolate the player's position then return early.
-        if (!lerpPosition)
-        {
-            return;
-        }
-
+        //if (!lerpPosition)
+        //{
+        //    return;
+        //}
+        //Debug.LogError("lerping remote player position");
         // Interpolate the player's position based on the lerp timer progress.
-        playerTransform.position = Vector3.Lerp(lerpFromPosition, lerpToPosition, lerpTimer / LerpTime);
-        lerpTimer += Time.deltaTime;
+        //ThisSnakeHead.transform.position = Vector3.Lerp(lerpFromPosition, lerpToPosition, lerpTimer / LerpTime);
+        ThisSnakeHead.transform.position = Vector3.Lerp(lerpFromPosition, lerpToPosition, 10*Time.deltaTime);
+        //ThisSnakeHead.transform.rotation = lerpToRotation;
+        //ThisSnakeHead.transform.eulerAngles = lerpToRotation.eulerAngles;
+        ThisSnakeHead.transform.eulerAngles = lerpToRotation;
+        //ThisSnakeHead.transform.position = Vector3.MoveTowards(lerpFromPosition, lerpToPosition, 10);
+        //lerpTimer += Time.deltaTime;
 
         // If we have reached the end of the lerp timer, explicitly force the player to the last known correct position.
         if (lerpTimer >= LerpTime)
         {
-            playerTransform.position = lerpToPosition;
+            ThisSnakeHead.transform.position = lerpToPosition;
             lerpPosition = false;
         }
     }
@@ -108,13 +118,13 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
     /// <param name="matchState">The incoming match state data.</param>
     private void OnReceivedMatchState(IMatchState matchState)
     {
-        Debug.LogError("--- Player Netwrok Remote Sync OnReceived Match State 1111");
+       // Debug.LogError("--- Player Netwrok Remote Sync OnReceived Match State 1111");
         // If the incoming data is not related to this remote player, ignore it and return early.
         if (matchState.UserPresence.SessionId != NetworkData.User.SessionId)
         {
             return;
         }
-        Debug.LogError("--- Player Netwrok Remote Sync OnReceived Match State 1111 opcoce="+ matchState.OpCode);
+       // Debug.LogError("--- Player Netwrok Remote Sync OnReceived Match State 1111 opcoce="+ matchState.OpCode);
 
         // Decide what to do based on the Operation Code of the incoming state data as defined in OpCodes.
         switch (matchState.OpCode)
@@ -126,6 +136,10 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
                 SetInputFromState(matchState.State);
                 break;
             case OpCodes.Died:
+                //playerMovementController.PlayDeathAnimation();//Srikanth
+                break;
+            case OpCodes.shoot:
+                ThisSnake.shoot();
                 //playerMovementController.PlayDeathAnimation();//Srikanth
                 break;
             default:
@@ -169,15 +183,27 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
     {
         var stateDictionary = GetStateAsDictionary(state);
 
-        playerRigidbody.velocity = new Vector2(float.Parse(stateDictionary["velocity.x"]), float.Parse(stateDictionary["velocity.y"]));
+        //playerRigidbody.velocity = new Vector2(float.Parse(stateDictionary["velocity.x"]), float.Parse(stateDictionary["velocity.y"]));
 
         var position = new Vector3(
             float.Parse(stateDictionary["position.x"]),
-            float.Parse(stateDictionary["position.y"]),
-            0);
+            0,
+            float.Parse(stateDictionary["position.z"]));
+
+         lerpToRotation = new Vector3(
+            float.Parse(stateDictionary["rotation.x"]),
+            float.Parse(stateDictionary["rotation.y"]),
+            float.Parse(stateDictionary["rotation.z"]));
+
+        //lerpToRotation = new Quaternion(
+        //    float.Parse(stateDictionary["rotation.x"]),
+        //    float.Parse(stateDictionary["rotation.y"]),
+        //    float.Parse(stateDictionary["rotation.z"]),0);
+
+       // lerpToRotation = rotation;
 
         // Begin lerping to the corrected position.
-        lerpFromPosition = playerTransform.position;
+        lerpFromPosition = ThisSnakeHead.transform.position;
         lerpToPosition = position;
         lerpTimer = 0;
         lerpPosition = true;

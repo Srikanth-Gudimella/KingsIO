@@ -29,9 +29,11 @@ public class PlayerNetworkLocalSync : MonoBehaviour
     private NakamaManager gameManager;
     //private PlayerHealthController playerHealthController;//Srikanth
     //private PlayerInputController playerInputController;//Srikanth
-    private Rigidbody2D playerRigidbody;
-    private Transform playerTransform;
+    //private Rigidbody2D playerRigidbody;
+    //private Transform playerTransform;
     private float stateSyncTimer;
+    public Snake ThisSnake;
+    public SnakeHead ThisSnakeHead;
 
     /// <summary>
     /// Called by Unity when this GameObject starts.
@@ -40,8 +42,11 @@ public class PlayerNetworkLocalSync : MonoBehaviour
     {
         gameManager = GameObject.FindGameObjectWithTag("NakamaManager").GetComponent<NakamaManager>();
         //playerInputController = GetComponent<PlayerInputController>();//Srikanth
-        playerRigidbody = GetComponentInChildren<Rigidbody2D>();
-        playerTransform = playerRigidbody.GetComponent<Transform>();
+        // playerRigidbody = GetComponentInChildren<Rigidbody2D>();
+        ThisSnake = GetComponent<Snake>();
+        ThisSnakeHead = ThisSnake.SnakeHead;
+
+        //playerTransform = GetComponent<Snake>().SnakeHead.transform;
     }
 
     /// <summary>
@@ -50,28 +55,29 @@ public class PlayerNetworkLocalSync : MonoBehaviour
     private void LateUpdate()
     {
         // Send the players current velocity and position every StateFrequency seconds.
-        if (stateSyncTimer <= 0)
-        {
+        //if (stateSyncTimer <= 0)
+        //{
             // Send a network packet containing the player's velocity and position.
             gameManager.SendMatchState(
                 OpCodes.VelocityAndPosition,
-                MatchDataJson.VelocityAndPosition(playerRigidbody.velocity, playerTransform.position));
+                MatchDataJson.VelocityAndPosition(ThisSnakeHead.transform.position, ThisSnakeHead.transform.rotation));
 
             stateSyncTimer = StateFrequency;
-        }
+        //}
 
         stateSyncTimer -= Time.deltaTime;
 
         // If the players input hasn't changed, return early.
-        if (!playerInputController.InputChanged)
-        {
-            return;
-        }
+        //if (!playerInputController.InputChanged)Srikanth
+        //{
+        //    return;
+        //}
 
         // Send network packet with the player's current input.
-        gameManager.SendMatchState(
-            OpCodes.Input, 
-            MatchDataJson.Input(playerInputController.HorizontalInput, playerInputController.Jump, playerInputController.JumpHeld, playerInputController.Attack)
-        );
+        //Srikanth
+        //gameManager.SendMatchState(
+        //    OpCodes.Input, 
+        //    MatchDataJson.Input(playerInputController.HorizontalInput, playerInputController.Jump, playerInputController.JumpHeld, playerInputController.Attack)
+        //);
     }
 }

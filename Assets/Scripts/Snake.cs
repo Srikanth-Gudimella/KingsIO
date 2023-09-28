@@ -165,7 +165,9 @@ public class Snake : MonoBehaviour
 
     void Start()
     {
-		if (isPlayer) {
+        nakamaManager = GameObject.FindGameObjectWithTag("NakamaManager").GetComponent<NakamaManager>();
+
+        if (isPlayer) {
 			if (GameManagerSlither.startWithBigSize) {
 				GameManagerSlither.startWithBigSize = false;
 				addPointsOnFoodForPlayer ((500));
@@ -412,7 +414,17 @@ public class Snake : MonoBehaviour
         }
 
     }
-	float bulletScaleValue;
+    private NakamaManager nakamaManager;
+
+    void ShootEvent()
+    {
+        bool IsShoot = true;
+        nakamaManager.SendMatchState(
+            OpCodes.shoot,
+            MatchDataJson.Input(IsShoot)
+        ); ;
+    }
+    float bulletScaleValue;
 	IEnumerator playerShoot(float WaitTime,float delayActiveTime)
 	{
 		yield return new WaitForSeconds (WaitTime);
@@ -420,9 +432,17 @@ public class Snake : MonoBehaviour
 		bullet.SetLayer(gameObject.layer, false);
 		bullet.GetComponent<BulletAction> ().setBulletScaleValue (referenceScale);
 		AudioClipManager.Instance.Play (InGameSounds.Fire);
-		yield return new WaitForSeconds (delayActiveTime);
+        ShootEvent();
+        yield return new WaitForSeconds (delayActiveTime);
 		IsActiveShoot = true;
 	}
+    public void shoot()
+    {
+        GameObject bullet = PoolingSystem.Instance.InstantiateAPS("playerBullet" + (SnakeHead.bulletType), SnakeHead.mouthObj.transform.position, SnakeHead.mouthObj.transform.rotation);
+        bullet.SetLayer(gameObject.layer, false);
+        bullet.GetComponent<BulletAction>().setBulletScaleValue(referenceScale);
+        //AudioClipManager.Instance.Play(InGameSounds.Fire);
+    }
     public void ControlGlow(SpriteRenderer glowEffect)
     {
 		return;

@@ -24,4 +24,5 @@ public class OpCodes
     public const long Died = 3;
     public const long Respawned = 4;
     public const long NewRound = 5;
+    public const long shoot = 6;
 }
