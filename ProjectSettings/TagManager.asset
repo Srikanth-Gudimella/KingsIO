@@ -19,6 +19,7 @@ TagManager:
   - SpeedBooster1
   - SpeedBooster2
   - Obstacle2
+  - NakamaManager
   layers:
   - Default
   - TransparentFX

@@ -47,6 +47,7 @@ public class Population : MonoBehaviour
 
     public void SpawnPopulation()
     {
+        return;
         //        if (GameManagerSlither.isForceOfflineMode)
         //        {
         //            small = 1;
@@ -55,18 +56,18 @@ public class Population : MonoBehaviour
         //        }
 
         
-        for (int i = 0; i < small; i++)
-        {
-            SpawnSnake(Random.Range(200, 500));
-        }
-        for (int i = 0; i < medium; i++)
-        {
-            SpawnSnake(Random.Range(2500, 4000));
-        }
-        for (int i = 0; i < big; i++)
-        {
-            SpawnSnake(Random.Range(6500, 12500));
-        }
+        //for (int i = 0; i < small; i++)
+        //{
+        //    SpawnSnake(Random.Range(200, 500));
+        //}
+        //for (int i = 0; i < medium; i++)
+        //{
+        //    SpawnSnake(Random.Range(2500, 4000));
+        //}
+        //for (int i = 0; i < big; i++)
+        //{
+        //    SpawnSnake(Random.Range(6500, 12500));
+        //}
 
 //        Snake.all_AIs_Mine = true;
         Debug.LogError("You are master,You created Snake AI's..!");
@@ -134,7 +135,7 @@ public class Population : MonoBehaviour
         currentSnakeCountIndex++;
     }
 
-    public void SpawnSnake(int points)
+    public GameObject SpawnSnake(int points,bool IsMyPlayer)
     {
         Transform spwanPointt = spawnPoses[Random.Range(0, spawnPoses.Count)];
         if (spwanPointt == null)
@@ -149,17 +150,17 @@ public class Population : MonoBehaviour
         GameObject newsnake;
         Snake snakeparams;
 
-        if (freeSnakesToSpawn.Count > 0)
-        {
-            //			Debug.LogError ("-----free snake spawn");
-            newsnake = freeSnakesToSpawn[0].gameObject;
-            snakeparams = freeSnakesToSpawn[0];
-            snakeparams.resetMe();
-            freeSnakesToSpawn.RemoveAt(0);
-            //            newsnake.transform.position = spwanPointt.position;//BalueCode
-            newsnake.transform.position = randomSpawnCircle;//srikanth added
-        }
-        else
+        //if (freeSnakesToSpawn.Count > 0)
+        //{
+        //    //			Debug.LogError ("-----free snake spawn");
+        //    newsnake = freeSnakesToSpawn[0].gameObject;
+        //    snakeparams = freeSnakesToSpawn[0];
+        //    snakeparams.resetMe();
+        //    freeSnakesToSpawn.RemoveAt(0);
+        //    //            newsnake.transform.position = spwanPointt.position;//BalueCode
+        //    newsnake.transform.position = randomSpawnCircle;//srikanth added
+        //}
+        //else
         {
             //            newsnake = (GameObject)Instantiate(snakePrefab, spwanPointt.position, snakePrefab.transform.rotation);//balu code
             //			Debug.LogError ("-----new snake spawn");
@@ -176,8 +177,8 @@ public class Population : MonoBehaviour
             //            Vector3 randomSpawnCircle = new Vector3(Random.Range(-Population.instance.RangeX, Population.instance.RangeX), newsnake.transform.position.y, Random.Range(-Population.instance.RangeZ, Population.instance.RangeZ));//srikanth commented
             newsnake.transform.position = randomSpawnCircle;
             snakeparams.addPointsOnFoodForPlayer(points);
-            snakeparams.isPlayer = false;
-            snakeparams.SnakeHead.IsPlayer = false;
+            snakeparams.isPlayer = IsMyPlayer;
+            snakeparams.SnakeHead.IsPlayer = IsMyPlayer;
         }
 
         if (currentSnakeCountIndex != allSnakesVisibleValues.Count)
@@ -215,7 +216,7 @@ public class Population : MonoBehaviour
                 newsnake.GetComponent<Snake>().playerDetails.text = GameManagerSlither.instance.AIOnlinePlayrNames[GameManagerSlither.instance.AIPlayerNameIndex] + "  " + newsnake.GetComponent<Snake>().getPoints();
                 newsnake.GetComponent<Snake>().playerName = GameManagerSlither.instance.AIOnlinePlayrNames[GameManagerSlither.instance.AIPlayerNameIndex];
             }
-       
+        return newsnake;
 
     }
 

@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Nakama;
+
 public class GameManagerSlither : MonoBehaviour
 {
     public static GameManagerSlither instance;
@@ -228,11 +230,14 @@ public class GameManagerSlither : MonoBehaviour
 
     void Start()
     {
-        //Debug.Log ("------ Gamemanager slither start");
-//        loading.SetActive(false);
-//        netSlowPop.SetActive(false);
-//        challengeInfo.SetActive(false);
-//        challengeInfoPlayArea.SetActive(false);
+
+		//Debug.Log ("------ Gamemanager slither start");
+		//        loading.SetActive(false);
+		//        netSlowPop.SetActive(false);
+		//        challengeInfo.SetActive(false);
+		//        challengeInfoPlayArea.SetActive(false);
+		players = new Dictionary<string, GameObject>();
+
 		AudioClipManager.Instance.Play (InGameSounds.BG);
 
 
@@ -262,12 +267,14 @@ public class GameManagerSlither : MonoBehaviour
 //       	InvokeRepeating("setPlayersLB",3,1);
 //		Invoke ("EnalbeLBList",3.1f);
         //Debug.Log ("------ Gamemanager slither start 22222222");
-		if (PlayerPrefs.HasKey ("HelpFirstTime")) {
-			OnPlayButton ();
-		} else {
-			Invoke ("OpenControlsPage", 0.5f);
-		}
-    }
+		//if (PlayerPrefs.HasKey ("HelpFirstTime")) {
+		//	OnPlayButton ();
+		//} else {
+		//	Invoke ("OpenControlsPage", 0.5f);
+		//}
+
+		//OnPlayButton();
+	}
 	void OpenControlsPage()
 	{
 		ControlsPage.mee.open ();
@@ -480,25 +487,90 @@ public class GameManagerSlither : MonoBehaviour
 //        InGameJoystickCanvas.SetActive(false);
     }
 
-   
 
-    public void OnPlayButton()
+	public IDictionary<string, GameObject> players;
+
+	public void OnPlayButton(IMatch match)
     {
-		Debug.Log("------ OnPlayButton");
+		Debug.Log("------ OnPlayButton count="+match.Size);
 //        InGameJoystickCanvas.SetActive(true);
         mainMenuCanvas.SetActive(false);
-        playerSnake.SetActive(true);
-        Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
-        MysnakeComponent.GetARandomTemplate();
-        playerSnake.GetComponent<Snake>().ShowPlayerName();
-        CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
-		Population.instance.StartPopulation ();
-		InvokeRepeating("setPlayersLB",3,1);
-		Invoke ("EnalbeLBList",3.1f);
-//		Invoke ("dummyFail",3);
-		snakeHeadObj = playerSnake.GetComponent<Snake> ().SnakeHead.gameObject;
-		body = snakeHeadObj.GetComponent<Rigidbody> ();
+		//foreach (var user in match.Presences)
+		//{
+		//	SpawnPlayer(match.Id, user);
+		//}
+		//SpawnPlayer();
+
+		//playerSnake.SetActive(true);
+//        Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
+//        MysnakeComponent.GetARandomTemplate();
+//        playerSnake.GetComponent<Snake>().ShowPlayerName();
+//        CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
+//		//Population.instance.StartPopulation ();
+//		Population.instance.SpawnSnake(200, true);
+//		//InvokeRepeating("setPlayersLB",3,1);
+//		//Invoke ("EnalbeLBList",3.1f);
+////		Invoke ("dummyFail",3);
+//		snakeHeadObj = playerSnake.GetComponent<Snake> ().SnakeHead.gameObject;
+//		body = snakeHeadObj.GetComponent<Rigidbody> ();
     }
+	public IUserPresence localUser;
+
+	public void SpawnPlayer(string matchId, IUserPresence user, int spawnIndex = -1)
+	{
+		Debug.LogError("------ SpawnPlayer 111111");
+		if (players.ContainsKey(user.SessionId))
+		{
+			return;
+		}
+
+		var isLocal = user.SessionId == localUser.SessionId;
+
+		bool IsMyPlayer = false;
+		IsMyPlayer = isLocal ? true : false;
+		Debug.LogError("------ SpawnPlayer 222222 IsMyPlayer="+IsMyPlayer);
+
+		GameObject PlayerObj =Population.instance.SpawnSnake(200,IsMyPlayer);
+		// Choose the appropriate player prefab based on if it's the local player or not.
+		//var playerPrefab = isLocal ? NetworkLocalPlayerPrefab : NetworkRemotePlayerPrefab;
+
+		// Spawn the new player.
+		//var player = Instantiate(playerPrefab, spawnPoint.transform.position, Quaternion.identity);
+
+
+
+		// Setup the appropriate network data values if this is a remote player.
+		if (!isLocal)
+		{
+			Debug.LogError("------ SpawnPlayer not islocal");
+
+			//player.GetComponent<PlayerNetworkRemoteSync>().NetworkData = new RemotePlayerNetworkData
+			//{
+			//	MatchId = matchId,
+			//	User = user
+			//};
+		}
+		else
+        {
+			Debug.LogError("------ SpawnPlayer local");
+
+			playerSnake = PlayerObj;
+			Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
+			MysnakeComponent.GetARandomTemplate();
+			playerSnake.GetComponent<Snake>().ShowPlayerName();
+			CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
+			//Population.instance.StartPopulation ();
+			//Population.instance.SpawnSnake(200, true);
+			//InvokeRepeating("setPlayersLB",3,1);
+			//Invoke ("EnalbeLBList",3.1f);
+			//		Invoke ("dummyFail",3);
+			snakeHeadObj = playerSnake.GetComponent<Snake>().SnakeHead.gameObject;
+			body = snakeHeadObj.GetComponent<Rigidbody>();
+		}
+
+		// Add the player to the players array.
+		players.Add(user.SessionId, PlayerObj);
+	}
 
 	public void dummyFail()
 	{

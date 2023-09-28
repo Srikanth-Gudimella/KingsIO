@@ -180,6 +180,8 @@ public class SnakeHead : MonoBehaviour
 	Vector3 playerPosition;
     void LateUpdate()
     {
+		if (!IsPlayer)
+			return;
 		if (!isStartMovement) {
 			return;
 		}

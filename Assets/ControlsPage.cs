@@ -90,7 +90,7 @@ public class ControlsPage : MonoBehaviour {
 		if (SceneManager.GetActiveScene ().name == "GameScene") {
 			PlayerPrefs.SetString ("HelpFirstTime","true");
 			Virtualjoystick.mee.SetJoyStickType ();
-			GameManagerSlither.instance.OnPlayButton ();
+			//GameManagerSlither.instance.OnPlayButton ();//Srikanth
 		} else {
 			menuPageHandler.mee.open ();
 		}

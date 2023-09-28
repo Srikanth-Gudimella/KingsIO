@@ -6,24 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/AdSetupScenes/0_AdManager.unity
-    guid: c7043b55af666a44ca376050f30909af
-  - enabled: 1
     path: Assets/Menu.unity
     guid: a54a45bbab7c41a4982739e35320793c
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/GameScene.unity
     guid: c54e7f602124e7b47aa72657efb95b2c
-  - enabled: 1
+  - enabled: 0
     path: Assets/UpgradePage.unity
     guid: 38f5ddbc66efec14e950351a7e636464
   m_configObjects: {}

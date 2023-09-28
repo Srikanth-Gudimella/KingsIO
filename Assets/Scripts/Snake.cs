@@ -696,7 +696,7 @@ public class Snake : MonoBehaviour
 //            if (GameManagerSlither.instance.playersListLB.Contains(this.gameObject))
 //                GameManagerSlither.instance.playersListLB.Remove(this.gameObject);
 
-            Population.instance.SpawnSnake(Random.Range(250, 500));
+            //Population.instance.SpawnSnake(Random.Range(250, 500));
         }
     }
 
