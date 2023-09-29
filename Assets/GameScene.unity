@@ -12721,6 +12721,51 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1772009425627886, guid: 20b43e7ed38be5140ad0627a557b6aac,
         type: 2}
+    - target: {fileID: 4133442096740636, guid: 2219531f4f4650f40a8bba809ab6f24e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4133442096740636, guid: 2219531f4f4650f40a8bba809ab6f24e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 4133442096740636, guid: 2219531f4f4650f40a8bba809ab6f24e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237615997875192, guid: 2219531f4f4650f40a8bba809ab6f24e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237615997875192, guid: 2219531f4f4650f40a8bba809ab6f24e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237615997875192, guid: 2219531f4f4650f40a8bba809ab6f24e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 212749021174569344, guid: 2219531f4f4650f40a8bba809ab6f24e,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 3.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 212749021174569344, guid: 2219531f4f4650f40a8bba809ab6f24e,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 212749021174569344, guid: 2219531f4f4650f40a8bba809ab6f24e,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4f6082f3462991e4bb2851c981c10438,
+        type: 3}
+    - target: {fileID: 212749021174569344, guid: 2219531f4f4650f40a8bba809ab6f24e,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2219531f4f4650f40a8bba809ab6f24e, type: 3}
 --- !u!1 &788433648
@@ -14220,8 +14265,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1187550775}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: playClick
+        m_TargetAssemblyTypeName: ResultPage, Assembly-CSharp
+        m_MethodName: ReStartClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22071,10 +22116,12 @@ MonoBehaviour:
   IsEnableWatchVideoToResume: 0
   myPlayerParent: {fileID: 975194812}
   shootBtn: {fileID: 1788011508}
+  restartPlayersCount: 0
   forPhotonObj: {fileID: 0}
   surviveTime: 100
   surviveSize: 100
   enemyKillsTarget: 10
+  keysToRemove: []
   IsPauseYesClicked: 0
   testBody: {fileID: 1234541228}
   otherPlayerMask:
@@ -36997,6 +37044,16 @@ PrefabInstance:
       value: LocalPlayer
       objectReference: {fileID: 0}
     - target: {fileID: 367576794863720883, guid: 74afc5aaf92c3c3418522f32014e92ba,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 368360859558435191, guid: 74afc5aaf92c3c3418522f32014e92ba,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 368731773199082279, guid: 74afc5aaf92c3c3418522f32014e92ba,
         type: 3}
       propertyPath: m_IsActive
       value: 0

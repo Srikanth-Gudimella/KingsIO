@@ -81,30 +81,32 @@ public class GameManagerSlither : MonoBehaviour
 	public GameObject myPlayerParent;
 
 	public GameObject shootBtn;
+	private GameObject localPlayer;
+	public int restartPlayersCount;
 
-//    public static void setTotalSnakesCountTxt(int countt)
-//    {
-//        instance.TotalSnakesCountTxt.text = countt.ToStringBtmFast();
-//    }
-//
-//    public static void setInCamSnakesCountTxt(int countt)
-//    {
-//        instance.InGameSnakesCountTxt.text = countt.ToStringBtmFast();
-//    }
-//    private static int DyingSankesCount = 0;
-//    public static void setDyingSnakesCountTxt(int countt)
-//    {
-//        DyingSankesCount += countt;
-//        if (DyingSankesCount < 0)
-//            DyingSankesCount = 1;
-//        instance.DyingSnakesCountTxt.text = DyingSankesCount.ToStringBtmFast();
-//    }
+	//    public static void setTotalSnakesCountTxt(int countt)
+	//    {
+	//        instance.TotalSnakesCountTxt.text = countt.ToStringBtmFast();
+	//    }
+	//
+	//    public static void setInCamSnakesCountTxt(int countt)
+	//    {
+	//        instance.InGameSnakesCountTxt.text = countt.ToStringBtmFast();
+	//    }
+	//    private static int DyingSankesCount = 0;
+	//    public static void setDyingSnakesCountTxt(int countt)
+	//    {
+	//        DyingSankesCount += countt;
+	//        if (DyingSankesCount < 0)
+	//            DyingSankesCount = 1;
+	//        instance.DyingSnakesCountTxt.text = DyingSankesCount.ToStringBtmFast();
+	//    }
 
-    //	public int scalablePiecesCount = 5;
-    //	public float scaleOffset;
+	//	public int scalablePiecesCount = 5;
+	//	public float scaleOffset;
 
-    // Use this for initialization
-    void Awake()
+	// Use this for initialization
+	void Awake()
     {
 		BGSoundManager.Instance.StopPlaying ();
 //        DyingSnakesCountTxt.text = "DyingSnakes 0";
@@ -237,6 +239,7 @@ public class GameManagerSlither : MonoBehaviour
 		//        challengeInfo.SetActive(false);
 		//        challengeInfoPlayArea.SetActive(false);
 		players = new Dictionary<string, GameObject>();
+		PlayerHeadIndexs = new Dictionary<string, int>();
 
 		AudioClipManager.Instance.Play (InGameSounds.BG);
 
@@ -275,15 +278,16 @@ public class GameManagerSlither : MonoBehaviour
 
         //OnPlayButton();
 
-        //mainMenuCanvas.SetActive(false);
-        //playerSnake.SetActive(true);
-        //playerSnake.GetComponent<Snake>().ShowPlayerName();
-        //Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
-        //MysnakeComponent.GetARandomTemplate();
-        //playerSnake.GetComponent<Snake>().ShowPlayerName();
-        //CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
-        //snakeHeadObj = playerSnake.GetComponent<Snake>().SnakeHead.gameObject;
-        //body = snakeHeadObj.GetComponent<Rigidbody>();
+  //      mainMenuCanvas.SetActive(false);
+  //      playerSnake.SetActive(true);
+  //      playerSnake.GetComponent<Snake>().ShowPlayerName();
+  //      Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
+		//Debug.LogError("---- check randotemplate call");
+  //      MysnakeComponent.GetARandomTemplate();
+  //      playerSnake.GetComponent<Snake>().ShowPlayerName();
+  //      CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
+  //      snakeHeadObj = playerSnake.GetComponent<Snake>().SnakeHead.gameObject;
+  //      body = snakeHeadObj.GetComponent<Rigidbody>();
 
     }
 	void OpenControlsPage()
@@ -500,6 +504,7 @@ public class GameManagerSlither : MonoBehaviour
 
 
 	public IDictionary<string, GameObject> players;
+	public IDictionary<string, int> PlayerHeadIndexs;
 
 	public void OnPlayButton(IMatch match)
     {
@@ -525,14 +530,39 @@ public class GameManagerSlither : MonoBehaviour
 //		snakeHeadObj = playerSnake.GetComponent<Snake> ().SnakeHead.gameObject;
 //		body = snakeHeadObj.GetComponent<Rigidbody> ();
     }
+	public IEnumerator GeneratePlayerRandomHeadIndex(float delayTime,IUserPresence user)
+    {
+		yield return new WaitForSeconds(delayTime);
+		if (PlayerHeadIndexs.ContainsKey(user.SessionId) || localUser.SessionId!=user.SessionId)
+		{
+			yield break; 
+		}
+		int Index = Random.Range(0, 15);
+		PlayerHeadIndexs.Add(user.SessionId, Index);
+		Debug.Log("Nakama instance=" + NakamaManager.Instance);
+		NakamaManager.Instance.SendMatchState(
+			   OpCodes.PlayerHeadIndex,
+			   MatchDataJson.Getkeyvalue("PlayerHeadIndexs", Index)
+		   );
+	}
+	public void PlayerHeadIndexSet(string userSessionID, int PlayerHeadIndex)
+	{
+		Debug.LogError("------ SpawnPlayer 111111");
+		if (PlayerHeadIndexs.ContainsKey(userSessionID))
+		{
+			return;
+		}
+		PlayerHeadIndexs.Add(userSessionID, PlayerHeadIndex);
+	}
 	public IUserPresence localUser;
 
-	public void SpawnPlayer(string matchId, IUserPresence user, int spawnIndex = -1)
+	public IEnumerator SpawnPlayer(float delayTime,string matchId, IUserPresence user, int spawnIndex = -1)
 	{
+		yield return new WaitForSeconds(delayTime);
 		Debug.LogError("------ SpawnPlayer 111111");
 		if (players.ContainsKey(user.SessionId))
 		{
-			return;
+			yield break;
 		}
 
 		var isLocal = user.SessionId == localUser.SessionId;
@@ -549,8 +579,11 @@ public class GameManagerSlither : MonoBehaviour
 		//var player = Instantiate(playerPrefab, spawnPoint.transform.position, Quaternion.identity);
 
 
-
-		// Setup the appropriate network data values if this is a remote player.
+		if (PlayerHeadIndexs.ContainsKey(user.SessionId))
+		{
+			PlayerObj.GetComponent<Snake>().FaceIndex = PlayerHeadIndexs[user.SessionId];
+		}
+			// Setup the appropriate network data values if this is a remote player.
 		if (!isLocal)
 		{
 			Debug.LogError("------ SpawnPlayer not islocal");
@@ -568,10 +601,11 @@ public class GameManagerSlither : MonoBehaviour
 		else
         {
 			Debug.LogError("------ SpawnPlayer local");
+			localPlayer = PlayerObj;
 
 			playerSnake = PlayerObj;
 			Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
-			MysnakeComponent.GetARandomTemplate();
+			//MysnakeComponent.GetARandomTemplate();
 			playerSnake.GetComponent<Snake>().ShowPlayerName();
 			CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
 			//Population.instance.StartPopulation ();
@@ -585,6 +619,8 @@ public class GameManagerSlither : MonoBehaviour
 
 		// Add the player to the players array.
 		players.Add(user.SessionId, PlayerObj);
+		keysToRemove.Add(user.SessionId);
+
 	}
 
 	public void dummyFail()
@@ -609,7 +645,7 @@ public class GameManagerSlither : MonoBehaviour
 		IsPauseYesClicked = true;
 
         Time.timeScale = 1;
-        openResultPage();
+        //openResultPage();
         //		Application.LoadLevel ("Menu");
     }
     public void pauseNoClick()
@@ -619,9 +655,39 @@ public class GameManagerSlither : MonoBehaviour
         Time.timeScale = 1;
     }
 
+	//private async void OnLocalPlayerDied()
+	//{
+	//	// Send a network message telling everyone that we died.
+
+
+
+	//	await nakamaManager.SendMatchStateAsync(OpCodes.Died, MatchDataJson.Died(player.transform.position));
+
+	//	// Remove ourself from the players array and destroy our GameObject after 0.5 seconds.
+	//	GameManagerSlither.instance.players.Remove(GameManagerSlither.instance.localUser.SessionId);
+	//	Destroy(this.gameObject, 0.5f);
+	//}
+	public async void AnnounceWinner()
+	{
+		// Get the winning player name, this will only ever be called if we are the winner so it's fine to grab our name from here.
+		// We could get this from Nakama using the following code:
+		// var account = await NakamaConnection.Client.GetAccountAsync(NakamaConnection.Session);
+		// var winningPlayerName = account.User.DisplayName;
+		// However, as explained below in the SetDisplayName method, when testing/debugging locally we would get the same name for all clients.
+		// So instead we will just use a private variable.
+		var winnerID = localUser.SessionId;
+
+		// Send a network message telling everyone else that we won.
+		await NakamaManager.Instance.SendMatchStateAsync(OpCodes.AnnounceWinner, MatchDataJson.AnnounceWiner(winnerID));
+
+		// Display the winning player message and respawn our player.
+		//await AnnounceWinnerAndRespawn(winningPlayerName);
+
+		openResultPage(winnerID);
+	}
 	bool IsOpenResultPageCalled=false;
 
-    public void openResultPage()
+    public void openResultPage(string winnerID)
     {
 		if (IsOpenResultPageCalled)
 			return;
@@ -647,10 +713,38 @@ public class GameManagerSlither : MonoBehaviour
         pausePop.SetActive(false);
 		IsOpenResultPageCalled = true;
         ResultPage.mee.Open();
-        //		Application.LoadLevel ("Menu");
-    }
 
-    public void setPlayersLB()
+		players.Remove(localUser.SessionId);
+		keysToRemove.Remove(localUser.SessionId);
+		Destroy(localPlayer);
+		
+		//foreach (var kvp in myDict)
+		//{
+		//	// Add keys to remove based on some condition
+		//	if (kvp.Key == "age")
+		//	{
+		//		keysToRemove.Add(kvp.Key);
+		//	}
+		//}
+
+		// Remove the keys from the dictionary
+		foreach (var key in keysToRemove)
+		{
+			GameObject thisOj = null;
+			if (players.ContainsKey(key))
+			{
+				thisOj = players[key];
+			}
+			players.Remove(key);
+			if(thisOj!=null)
+			Destroy(thisOj);
+		}
+
+
+		//		Application.LoadLevel ("Menu");
+	}
+	public List<string> keysToRemove = new List<string>();
+	public void setPlayersLB()
     {
         //				Debug.LogError ("----- setPlayersLB");
         for (int i = 0; i < playersListLB.Count; i++)
@@ -834,5 +928,24 @@ public class GameManagerSlither : MonoBehaviour
 //				showCountDownTimerAnim ();
 		}
 
+	}
+	public void RestartGame()
+    {
+		if(restartPlayersCount==2)
+        {
+			Debug.LogError("---- restart game");
+			AudioClipManager.Instance.Play(InGameSounds.Button);
+
+			System.GC.Collect();
+			keysToRemove.Clear();
+			StartCoroutine(SpawnPlayer(2, NakamaManager.Instance.currentMatch.Id, localUser));
+
+			Debug.Log("--- localPlayer="+localPlayer);
+			// Tell everyone where we respawned.
+			NakamaManager.Instance.SendMatchState(OpCodes.Respawned, MatchDataJson.Respawned(localPlayer.transform.position));
+			isPlayerBlasted = false;
+			ResultPage.mee.gameObject.SetActive(false);
+
+		}
 	}
 }

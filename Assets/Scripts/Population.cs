@@ -138,15 +138,18 @@ public class Population : MonoBehaviour
 
     public GameObject SpawnSnake(int points,bool IsMyPlayer)
     {
+        Debug.Log("SpawnSnake 111111");
         Transform spwanPointt = spawnPoses[Random.Range(0, spawnPoses.Count)];
         if (spwanPointt == null)
         {
             spwanPointt = snakePrefab.transform;
         }
+        Debug.Log("SpawnSnake 2222222");
 
         //		Vector3 randomSpawnCircle = new Vector3(Random.Range(-Population.instance.RangeX,Population.instance.RangeX), 0, Random.Range(-Population.instance.RangeZ,Population.instance.RangeZ));
         posCheckCount = 0;
         generatePos();
+        Debug.Log("SpawnSnake 333333");
 
         GameObject newsnake;
         Snake snakeparams;
@@ -180,13 +183,15 @@ public class Population : MonoBehaviour
                 //};
 
             }
-                //newsnake = (GameObject)Instantiate(snakePrefab, randomSpawnCircle, snakePrefab.transform.rotation);//srikanth added
-           
+            //newsnake = (GameObject)Instantiate(snakePrefab, randomSpawnCircle, snakePrefab.transform.rotation);//srikanth added
+
+            Debug.Log("SpawnSnake 44444");
 
             snakeparams = newsnake.GetComponent<Snake>();
             setVisibleIndexesAndCurrentSnakeCountIndexes(snakeparams);
             //set Layer only for New Snake...
             SetAvailbleLayerToMySnake(snakeparams);
+            Debug.Log("SpawnSnake 55555");
 
             //            Vector2 randomSpawnCircleVector2 = Random.insideUnitCircle * spawnCircleLenght;
             //Vector3 randomSpawnCircle = new Vector3(randomSpawnCircleVector2.x, newsnake.transform.position.y, randomSpawnCircleVector2.y);
@@ -201,17 +206,24 @@ public class Population : MonoBehaviour
         {
             Debug.LogError("Should be equal " + currentSnakeCountIndex + "==" + allSnakesVisibleValues.Count);
         }
+        Debug.Log("SpawnSnake 66666");
 
         snakeparams.GetARandomTemplate();
-//        GameManagerSlither.setTotalSnakesCountTxt(Population.currentSnakeCountIndex);
-        snakeparams.snakePieces[0].GetComponent<SnakeHead>().SetColorBasedOnTemplate();//srikanth 
-        for (int i = 1; i < snakeparams.snakePieces.Count; i++)
-        {
-            snakeparams.snakePieces[i].GetComponent<Piece>().InitializePiece(i, snakeparams);
-        }
+        Debug.Log("SpawnSnake 7777777");
+
+        //        GameManagerSlither.setTotalSnakesCountTxt(Population.currentSnakeCountIndex);
+       // snakeparams.snakePieces[0].GetComponent<SnakeHead>().SetColorBasedOnTemplate();//srikanth 
+        Debug.Log("SpawnSnake 888888");
+
+        //for (int i = 1; i < snakeparams.snakePieces.Count; i++)
+        //{
+        //    snakeparams.snakePieces[i].GetComponent<Piece>().InitializePiece(i, snakeparams);
+        //}
+        Debug.Log("SpawnSnake 9999999");
+
         //////////srikanth 
-       
-            GameManagerSlither.instance.AIPlayerNameIndex++;
+
+        GameManagerSlither.instance.AIPlayerNameIndex++;
             //Debug.Log("SpawningSnakes="+ GameManagerSlither.instance.AIPlayerNameIndex);
             //		Debug.Log ("enemy playername ="+GameManagerSlither.instance.AIPlayerNameIndex+":::"+(GameManagerSlither.instance.AIPlayrNamesNew [GameManagerSlither.instance.AIPlayerNameIndex]));
             if (!GameManagerSlither.isForceOfflineMode)

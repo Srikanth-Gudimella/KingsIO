@@ -132,6 +132,16 @@ public class ResultPage : MonoBehaviour {
 			Application.LoadLevel ("Menu");
 		}
 	}
+	public void ReStartClick()
+    {
+		GameManagerSlither.instance.restartPlayersCount++;
+		NakamaManager.Instance.SendMatchState(
+			   OpCodes.NewRound,
+			   MatchDataJson.Input(true)
+		   );
+
+		GameManagerSlither.instance.RestartGame();
+    }
 	public void retryClick()
 	{
 		AudioClipManager.Instance.Play (InGameSounds.Button);

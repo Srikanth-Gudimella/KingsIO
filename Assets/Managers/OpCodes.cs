@@ -25,4 +25,9 @@ public class OpCodes
     public const long Respawned = 4;
     public const long NewRound = 5;
     public const long shoot = 6;
+    public const long damage = 7;
+    public const long AnnounceWinner = 8;
+    public const long Restart = 9;
+    public const long PlayerHeadIndex = 10;
+
 }

@@ -137,11 +137,21 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
                 break;
             case OpCodes.Died:
                 //playerMovementController.PlayDeathAnimation();//Srikanth
+                ThisSnake.PlayerDeathAnimation();
+
                 break;
             case OpCodes.shoot:
-                ThisSnake.shoot();
+                //ThisSnake.shoot();
+                StartCoroutine(ThisSnake.shoot());
                 //playerMovementController.PlayDeathAnimation();//Srikanth
                 break;
+            case OpCodes.damage:
+                //ThisSnake.shoot();
+                var stateDictionary = GetStateAsDictionary(matchState.State);
+                ThisSnake.reduceStrength(int.Parse(stateDictionary["damage"]));
+                //playerMovementController.PlayDeathAnimation();//Srikanth
+                break;
+
             default:
                 break;
         }

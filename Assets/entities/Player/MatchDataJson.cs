@@ -72,6 +72,24 @@ public static class MatchDataJson
 
         return values.ToJson();
     }
+    public static string damage(int damageValue)
+    {
+        var values = new Dictionary<string, string>
+        {
+            { "damage", damageValue.ToString() }
+        };
+
+        return values.ToJson();
+    }
+    public static string Getkeyvalue(string keystring,int value)
+    {
+        var values = new Dictionary<string, string>
+        {
+            { "PlayerHeadIndexs", value.ToString() }
+        };
+
+        return values.ToJson();
+    }
 
     /// <summary>
     /// Creates a network message specifying that the player died and the position when they died.
@@ -94,11 +112,12 @@ public static class MatchDataJson
     /// </summary>
     /// <param name="spawnIndex">The spawn point.</param>
     /// <returns>A JSONified string containing the player's respawn point.</returns>
-    public static string Respawned(int spawnIndex)
+    public static string Respawned(Vector3 position)
     {
         var values = new Dictionary<string, string>
         {
-            { "spawnIndex", spawnIndex.ToString() },
+            { "position.x", position.x.ToString() },
+            { "position.y", position.y.ToString() }
         };
 
         return values.ToJson();
@@ -116,6 +135,15 @@ public static class MatchDataJson
             { "winningPlayerName", winnerPlayerName }
         };
         
+        return values.ToJson();
+    }
+    public static string AnnounceWiner(string winnerID)
+    {
+        var values = new Dictionary<string, string>
+        {
+            { "winnerID", winnerID }
+        };
+
         return values.ToJson();
     }
 }

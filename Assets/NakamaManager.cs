@@ -12,9 +12,14 @@ public class NakamaManager : MonoBehaviour
     //private IDictionary<string, GameObject> players;
     //private IUserPresence localUser;
     //private GameObject localPlayer;
-    private IMatch currentMatch;
+    public IMatch currentMatch;
     private string localDisplayName;
+    public static NakamaManager Instance;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     private async void Start()
     {
         Debug.LogError("------ Nakama Manager Start");
@@ -78,16 +83,23 @@ public class NakamaManager : MonoBehaviour
 
         // Play the match music.
         //AudioManager.PlayMatchTheme();//Srikanth
+        currentMatch = match;
+        Debug.LogError("currentMatch 1111=" + currentMatch+"::count="+ match.Size);
         GameManagerSlither.instance.OnPlayButton(match);
+        foreach (var user in match.Presences)
+        {
+            Debug.LogError("---- GeneratePlayerRandomHeadIndex 111111111");
+            //GameManagerSlither.instance.GeneratePlayerRandomHeadIndex(user);//Srikanth
+            StartCoroutine(GameManagerSlither.instance.GeneratePlayerRandomHeadIndex(1,user));//Srikanth
+        }
         // Spawn a player instance for each connected user.
         foreach (var user in match.Presences)
         {
             Debug.LogError("---- can spawn player here");
-            GameManagerSlither.instance.SpawnPlayer(match.Id, user);//Srikanth
+            StartCoroutine(GameManagerSlither.instance.SpawnPlayer(2,match.Id, user));//Srikanth
         }
 
         // Cache a reference to the current match.
-        currentMatch = match;
     }
 
     /// <summary>
@@ -100,7 +112,15 @@ public class NakamaManager : MonoBehaviour
         // For each new user that joins, spawn a player for them.
         foreach (var user in matchPresenceEvent.Joins)
         {
-            GameManagerSlither.instance.SpawnPlayer(matchPresenceEvent.MatchId, user);//Srikanth
+            Debug.LogError("currentMatch 222 =" + currentMatch);
+
+            Debug.LogError("---- GeneratePlayerRandomHeadIndex 222222222");
+            StartCoroutine(GameManagerSlither.instance.GeneratePlayerRandomHeadIndex(1,user));//Srikanth
+        }
+        foreach (var user in matchPresenceEvent.Joins)
+        {
+            //GameManagerSlither.instance.SpawnPlayer(matchPresenceEvent.MatchId, user);//Srikanth
+            StartCoroutine(GameManagerSlither.instance.SpawnPlayer(2, matchPresenceEvent.MatchId, user));//Srikanth
         }
 
         // For each player that leaves, despawn their player.
@@ -139,17 +159,35 @@ public class NakamaManager : MonoBehaviour
                 // If there is only one player left and that us, announce the winner and start a new round.
                 if (GameManagerSlither.instance.players.Count == 1 && GameManagerSlither.instance.players.First().Key == GameManagerSlither.instance.localUser.SessionId)
                 {
-                    //AnnounceWinnerAndStartNewRound();//Srikanth
+                    GameManagerSlither.instance.AnnounceWinner();//Srikanth
+
+                    //GameManagerSlither.instance.Invoke("openResultPage", 2);
                 }
+                break;
+            case OpCodes.AnnounceWinner:
+                // Display the winning player's name and begin a new round.
+                GameManagerSlither.instance.openResultPage(state["winnerID"]);//Srikanth
                 break;
             case OpCodes.Respawned:
                 // Spawn the player at the chosen spawn index.
-                //SpawnPlayer(currentMatch.Id, matchState.UserPresence, int.Parse(state["spawnIndex"]));//Srikanth
+                //GameManagerSlither.instance.SpawnPlayer(currentMatch.Id, matchState.UserPresence, int.Parse(state["spawnIndex"]));//Srikanth
+                //GameManagerSlither.instance.SpawnPlayer(currentMatch.Id, matchState.UserPresence);//Srikanth
+                StartCoroutine(GameManagerSlither.instance.SpawnPlayer(2, currentMatch.Id, matchState.UserPresence));//Srikanth
                 break;
             case OpCodes.NewRound:
                 // Display the winning player's name and begin a new round.
                 //await AnnounceWinnerAndRespawn(state["winningPlayerName"]);//Srikanth
+                GameManagerSlither.instance.restartPlayersCount++;
+               
+                GameManagerSlither.instance.RestartGame();
                 break;
+            case OpCodes.PlayerHeadIndex:
+                // Display the winning player's name and begin a new round.
+                //await AnnounceWinnerAndRespawn(state["winningPlayerName"]);//Srikanth
+
+                GameManagerSlither.instance.PlayerHeadIndexSet(userSessionId, int.Parse(state["PlayerHeadIndexs"]));
+                break;
+
             default:
                 break;
         }
@@ -171,6 +209,7 @@ public class NakamaManager : MonoBehaviour
     /// <param name="state">The stringified JSON state data.</param>
     public void SendMatchState(long opCode, string state)
     {
+        //Debug.Log("SendMatchState socket=" + NakamaConnection.Socket + "::currentMatch=" + currentMatch);
         NakamaConnection.Socket.SendMatchStateAsync(currentMatch.Id, opCode, state);
     }
     public void SetDisplayName(string displayName)

@@ -34,12 +34,23 @@ public class BulletAction : MonoBehaviour {
 //	}
 	void OnTriggerEnter(Collider obj)
 	{
+			//Debug.Log("bullet hit tag="+obj.tag);
 		if (obj.CompareTag ("Snake")) {
+			//Debug.Log("bullet hit 1111");
+			PoolingSystem.DestroyAPS(gameObject);
 			Snake snakeParam = obj.transform.root.GetComponent<Snake>();
-			snakeParam.reduceStrength (20,gameObject);
-			PoolingSystem.DestroyAPS (gameObject);
+			//Debug.Log("bullet hit 22222 isplayer="+snakeParam.isPlayer);
+			if (snakeParam.isPlayer)
+			{
+			Debug.Log("bullet hit 3333");
+				snakeParam.reduceStrength(20);
+			}
 //			if(gameObject.layer.com==GameManagerSlither.instance.playerSnake.layer)
 		}
+		//else
+  //      {
+		//	PoolingSystem.DestroyAPS(gameObject);
+		//}
 	}
 	float bulletScaleValue;
 

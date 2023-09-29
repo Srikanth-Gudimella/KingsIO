@@ -107,40 +107,51 @@ public class Snake : MonoBehaviour
 	//AIModule
     void Awake()
     {
-//		Debug.Log ("isPlayer="+isPlayer);
-		//decide head and assign values
-		for (int i = 0; i < HeadObjs.Length; i++) {
+        Debug.LogError("---- Snake Awake");
+
+        //		Debug.Log ("isPlayer="+isPlayer);
+        //decide head and assign values
+        for (int i = 0; i < HeadObjs.Length; i++) {
 			HeadObjs [i].SetActive (false);
 		}
-		if (isPlayer) {
-//			GameManagerSlither.selectedSnakeIndex = 13;
-			HeadObjs [GameManagerSlither.selectedSnakeIndex].SetActive (true);
-			SnakeHead = HeadObjs [GameManagerSlither.selectedSnakeIndex].GetComponent<SnakeHead> ();
-			FaceIndex = GameManagerSlither.selectedSnakeIndex;
-		} else {
-			GetARandomTemplate ();
-			HeadObjs [FaceIndex].SetActive (true);
-			SnakeHead = HeadObjs [FaceIndex].GetComponent<SnakeHead> ();
-		}
-		setBulletType ();
+		
+    }
+    public int mySnakeRenderIndexInAllSnakes = 0;
 
-		aiModule = SnakeHead.aimodule;
+    void Start()
+    {
+        Debug.LogError("---- Snake Start");
+        //if (isPlayer)
+        //{
+        //    //			GameManagerSlither.selectedSnakeIndex = 13;
+        //    FaceIndex = GameManagerSlither.selectedSnakeIndex;
+        //}
+        //else
+        //{
+        //    GetARandomTemplate();
+        //}
+        HeadObjs[FaceIndex].SetActive(true);
+        SnakeHead = HeadObjs[FaceIndex].GetComponent<SnakeHead>();
+        setBulletType();
+
+        aiModule = SnakeHead.aimodule;
 
         snakePieces = new List<Transform>();
         snakePieces.Add(SnakeHead.transform);
-		SnakeHead.RangeX = Population.instance.RangeX;
-		SnakeHead.RangeZ = Population.instance.RangeZ;
+        SnakeHead.RangeX = Population.instance.RangeX;
+        SnakeHead.RangeZ = Population.instance.RangeZ;
         //Debug.Log("added Head..");
         cacheCountPieces = snakePieces.Count;
 
-		if (isPlayer) {
-//			generatePos();
-			spintFillerCount=0;
-//			GameManagerSlither.instance.boosterFillBar.GetComponent<Image> ().fillAmount = spintFillerCount;
-			randomSpawnCircle=GameManagerSlither.instance.myPlayerSpawnPoses[Random.Range(0, GameManagerSlither.instance.myPlayerSpawnPoses.Count)];
+        if (isPlayer)
+        {
+            //			generatePos();
+            spintFillerCount = 0;
+            //			GameManagerSlither.instance.boosterFillBar.GetComponent<Image> ().fillAmount = spintFillerCount;
+            randomSpawnCircle = GameManagerSlither.instance.myPlayerSpawnPoses[Random.Range(0, GameManagerSlither.instance.myPlayerSpawnPoses.Count)];
 
-			transform.position = randomSpawnCircle.position;//srikanth added
-		}
+            transform.position = randomSpawnCircle.position;//srikanth added
+        }
         myHeadTrans = SnakeHead.transform;
         //PieceMoverObj.parent = SnakeHead.transform;
 
@@ -152,19 +163,15 @@ public class Snake : MonoBehaviour
         myVisiblePointsMover.Add(false);
         myHeadVisible.myPieceIndex = 0;
 
-//			for (int i = 0; i < 20; i++) {
-				addPointsOnFoodForPlayer(0);
-//			}
-//			if (myPointsPos.Count < snakePartsBasedOnFood)
-//			{
-//				checkNAddPart ();
-//			}
-		strength = 100;
-    }
-    public int mySnakeRenderIndexInAllSnakes = 0;
+        //			for (int i = 0; i < 20; i++) {
+        addPointsOnFoodForPlayer(0);
+        //			}
+        //			if (myPointsPos.Count < snakePartsBasedOnFood)
+        //			{
+        //				checkNAddPart ();
+        //			}
+        strength = 100;
 
-    void Start()
-    {
         nakamaManager = GameObject.FindGameObjectWithTag("NakamaManager").GetComponent<NakamaManager>();
 
         if (isPlayer) {
@@ -228,9 +235,13 @@ public class Snake : MonoBehaviour
 			aiModule.attackingPercentage = 3;
 		}
         isAttackingPlayerObj = aiModule.isAttackingPlayer;
-
+        //if(!isPlayer)
+        //Invoke(nameof(reduceStregthTest), 2);
     }
-
+    void reduceStregthTest()
+    {
+        reduceStrength(100);
+    }
     public void GetARandomTemplate()
     {
 		//Debug.Log ("GetARandomTemplate");
@@ -239,8 +250,8 @@ public class Snake : MonoBehaviour
         {
             //			colorTemplate = GameManager.instance.colorTemplates [Random.Range (0, GameManager.instance.colorTemplates.Length)];
 //            MaterialIndex = Random.Range(0, GameManagerSlither.instance.snakeMaterials.Length);
-			FaceIndex = Random.Range(0, HeadObjs.Length);
-
+			//FaceIndex = Random.Range(0, HeadObjs.Length);
+            FaceIndex = 0;
         }
         //		else
         //		{
@@ -266,11 +277,11 @@ public class Snake : MonoBehaviour
             DeathRoutine();
             return;
         }
-		if (strength < 100) {
-			strength +=0.04f;
-			float scaleX = strength * 1 / 100;
-			healthFillBar.transform.localScale = new Vector3 (scaleX, 1, 4);
-		}
+		//if (strength < 100) {
+		//	strength +=0.04f;
+		//	float scaleX = strength * 1 / 100;
+		//	healthFillBar.transform.localScale = new Vector3 (scaleX, 1, 4);
+		//}
        
 
     }
@@ -436,8 +447,10 @@ public class Snake : MonoBehaviour
         yield return new WaitForSeconds (delayActiveTime);
 		IsActiveShoot = true;
 	}
-    public void shoot()
+    public IEnumerator shoot()
     {
+        SnakeHead.mouthAnim.Play();
+        yield return new WaitForSeconds(0.2f);
         GameObject bullet = PoolingSystem.Instance.InstantiateAPS("playerBullet" + (SnakeHead.bulletType), SnakeHead.mouthObj.transform.position, SnakeHead.mouthObj.transform.rotation);
         bullet.SetLayer(gameObject.layer, false);
         bullet.GetComponent<BulletAction>().setBulletScaleValue(referenceScale);
@@ -669,21 +682,22 @@ public class Snake : MonoBehaviour
 
     public void DeathRoutine()
     {
+        Debug.Log("---DeathRoutine");
         if (dieing) return;
 
         dieing = true;
 //        GameManagerSlither.setDyingSnakesCountTxt(1);
 		//		Debug.Log ("--------- DeathRoutine 1111111");
-		if (SnakeHead.transform.position.DistanceBtmSuperFast (Camera.main.transform.position) <= 250 * 250) {
-			//			Debug.Log ("--------- DeathRoutine 222222222");
-			for (int i=0;i<10;i++) {
-					Vector3 randomCircle = Random.insideUnitSphere * 35;
-					randomCircle.y = 0;
-					int value = Random.Range (3, 5);//srikanth added
-				FoodManager.instance.SpawnFoodDestroyable (value, FoodManager.instance.foodColorRandomList [Random.Range (0, FoodManager.instance.foodColorRandomList.Length)], SnakeHead.gameObject.transform.position + randomCircle,SnakeHead.gameObject.transform.position, false,true);
+		//if (SnakeHead.transform.position.DistanceBtmSuperFast (Camera.main.transform.position) <= 250 * 250) {
+		//	//			Debug.Log ("--------- DeathRoutine 222222222");
+		//	for (int i=0;i<10;i++) {
+		//			Vector3 randomCircle = Random.insideUnitSphere * 35;
+		//			randomCircle.y = 0;
+		//			int value = Random.Range (3, 5);//srikanth added
+		//		FoodManager.instance.SpawnFoodDestroyable (value, FoodManager.instance.foodColorRandomList [Random.Range (0, FoodManager.instance.foodColorRandomList.Length)], SnakeHead.gameObject.transform.position + randomCircle,SnakeHead.gameObject.transform.position, false,true);
 
-			}
-		}
+		//	}
+		//}
 
         //if (!isPlayer)
         //Population.instance.SpawnSnake(Random.Range(250, 1000));
@@ -695,17 +709,20 @@ public class Snake : MonoBehaviour
 			BGSoundManager.Instance.StopPlaying ();
 //			gameObject.SetActive(false);
 			AudioClipManager.Instance.Play (InGameSounds.ResultPage);
-			if (GameManagerSlither.instance.IsEnableWatchVideoToResume && !GameManagerSlither.instance.IsPauseYesClicked) {
-				GameManagerSlither.instance.isPlayerBlasted = true;
-				GameManagerSlither.instance.destroyPlayer ();
-				ResumePage.instance.Invoke ("Open", 2);
-//				ResumePage.instance.Open ();
-				GameManagerSlither.instance.IsEnableWatchVideoToResume = false;
-			} else {
-				GameManagerSlither.instance.destroyPlayer ();
-				GameManagerSlither.instance.Invoke("openResultPage", 2);
+//			if (GameManagerSlither.instance.IsEnableWatchVideoToResume && !GameManagerSlither.instance.IsPauseYesClicked) {
+//				GameManagerSlither.instance.isPlayerBlasted = true;
+//				GameManagerSlither.instance.destroyPlayer ();
+//				ResumePage.instance.Invoke ("Open", 2);
+////				ResumePage.instance.Open ();
+//				GameManagerSlither.instance.IsEnableWatchVideoToResume = false;
+//			} else {
+			GameManagerSlither.instance.destroyPlayer ();//this is death animation or replace it
+            OnLocalPlayerDied();
+            //Destroy(player, 0.5f);
 
-			}
+           // GameManagerSlither.instance.Invoke("openResultPage", 2);
+
+			//}
         }
         else
         {
@@ -719,7 +736,20 @@ public class Snake : MonoBehaviour
             //Population.instance.SpawnSnake(Random.Range(250, 500));
         }
     }
+    private async void OnLocalPlayerDied()
+    {
+        // Send a network message telling everyone that we died.
 
+     
+
+        await nakamaManager.SendMatchStateAsync(OpCodes.Died, MatchDataJson.Died(player.transform.position));
+
+        // Remove ourself from the players array and destroy our GameObject after 0.5 seconds.
+        GameManagerSlither.instance.players.Remove(GameManagerSlither.instance.localUser.SessionId);
+        GameManagerSlither.instance.keysToRemove.Remove(GameManagerSlither.instance.localUser.SessionId);
+
+        Destroy(this.gameObject, 0.5f);
+    }
 
     public void ShowPlayerName()
     {
@@ -752,34 +782,63 @@ public class Snake : MonoBehaviour
     //Photon..
 
 
-	public void reduceStrength(int amount, GameObject collidedObj)
+	public void reduceStrength(int amount)
 	{
+        //Debug.Log("reducestrength=" + amount + "::currentstrength=" + strength+"::IsPlayer="+isPlayer);
 		strength -= amount;
-		if (strength < 0)
+		//strength -= strength;
+        if (strength < 0)
 			strength = 0;
 		float scaleX = strength * 2 / 100;
 		healthFillBar.transform.localScale = new Vector3 (scaleX,1,4);
 		SnakeHead.BulletHitAnim.Play ();
 		SnakeHead.BulletHitPlayerAnim.Play ();
-//		if (isPlayer)
-//			strength = 0;
-		if (strength <= 0) {
-			DeathRoutine();
-			//		if (!snakeParameters.isPlayer && GameManagerSlither.challengeModeType==3 && obj.gameObject.layer == LayerMask.NameToLayer ("snake1")) {
-			if (!isPlayer && collidedObj.layer == LayerMask.NameToLayer ("snake1")) {
-				Debug.Log ("Enemies killed count="+(GameManagerSlither.instance.enemiesKilledCount));
-				GameManagerSlither.instance.enemiesKilledCount++;
-				if (GameManagerSlither.challengeModeType == 3) {
-					GameManagerSlither.instance.checkTargetKills ();
-				}
-			}
-		}
+        //Debug.Log("final strength=" + strength);
+
+        //		if (isPlayer)
+        //			strength = 0;
+  //      if (strength <= 0) {
+		//	DeathRoutine();
+		//	//		if (!snakeParameters.isPlayer && GameManagerSlither.challengeModeType==3 && obj.gameObject.layer == LayerMask.NameToLayer ("snake1")) {
+		//	//if (!isPlayer && collidedObj.layer == LayerMask.NameToLayer ("snake1")) {
+		//	//	Debug.Log ("Enemies killed count="+(GameManagerSlither.instance.enemiesKilledCount));
+		//	//	GameManagerSlither.instance.enemiesKilledCount++;
+		//	//	if (GameManagerSlither.challengeModeType == 3) {
+		//	//		GameManagerSlither.instance.checkTargetKills ();
+		//	//	}
+		//	//}
+		//}
 		if (isPlayer) {
-			GameManagerSlither.instance.camAnim.Play ();
+            //Debug.Log("reduce strength before damage event call");
+            DamangeEvent();
+
+            if (strength <= 0)
+            {
+                DeathRoutine();
+            }
+            GameManagerSlither.instance.camAnim.Play ();
 			AudioClipManager.Instance.Play (InGameSounds.Hurt);
-		}
-	}
-	public void setBulletType()
+            //Debug.Log("reduce strength damage event call");
+        }
+
+    }
+    void DamangeEvent()
+    {
+        Debug.Log("--- DamaeEvent");
+        int damangevalue = 20;
+        if (GameManagerSlither.instance.players.Count >= 2)
+        {
+            nakamaManager.SendMatchState(
+                OpCodes.damage,
+                MatchDataJson.damage(damangevalue)
+            );
+        }
+    }
+    public void PlayerDeathAnimation()
+    {
+        GameManagerSlither.instance.destroyPlayer();//this is remote player die animation
+    }
+    public void setBulletType()
 	{
 //		Debug.Log ("setBulletType faceindex="+FaceIndex);
 		switch (FaceIndex) {
