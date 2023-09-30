@@ -41,24 +41,13 @@ public class NakamaManager : MonoBehaviour
         NakamaConnection.Socket.ReceivedMatchmakerMatched += m => mainThread.Enqueue(() => OnReceivedMatchmakerMatched(m));
         NakamaConnection.Socket.ReceivedMatchPresence += m => mainThread.Enqueue(() => OnReceivedMatchPresence(m));
         NakamaConnection.Socket.ReceivedMatchState += m => mainThread.Enqueue(async () => await OnReceivedMatchState(m));
-        FindMatch();
+        //FindMatch();
         // Setup in-game menu event handler.
         //InGameMenu.GetComponent<InGameMenu>().OnRequestQuitMatch.AddListener(async () => await QuitMatch());
     }
     public async void FindMatch()
     {
-        //MenuPanel.SetActive(false);
-        //MatchmakingPanel.SetActive(true);
-        //CreditsPanel.SetActive(false);
-
-        //PlayerPrefs.SetString("Name", NameField.text);
-        //gameManager.SetDisplayName(NameField.text);
-        //await NakamaConnection.FindMatch(int.Parse(PlayersDropdown.options[PlayersDropdown.value].text));
-
-        //MenuPanel.SetActive(false);
-        //MatchmakingPanel.SetActive(true);
-        //CreditsPanel.SetActive(false);
-
+        ConnectingPopHandler.Instance.Open();
         PlayerPrefs.SetString("Name", "Sri");
         SetDisplayName("Sri");
         await NakamaConnection.FindMatch(2);
@@ -86,6 +75,8 @@ public class NakamaManager : MonoBehaviour
         currentMatch = match;
         Debug.LogError("currentMatch 1111=" + currentMatch+"::count="+ match.Size);
         GameManagerSlither.instance.OnPlayButton(match);
+        ConnectingPopHandler.Instance.Close();
+
         foreach (var user in match.Presences)
         {
             Debug.LogError("---- GeneratePlayerRandomHeadIndex 111111111");
@@ -151,20 +142,26 @@ public class NakamaManager : MonoBehaviour
         switch (matchState.OpCode)
         {
             case OpCodes.Died:
+                Debug.Log("----- NakamaManager died event");
+
                 // Get a reference to the player who died and destroy their GameObject after 0.5 seconds and remove them from our players array.
                 var playerToDestroy = GameManagerSlither.instance.players[userSessionId];
-                Destroy(playerToDestroy, 0.5f);
+                //Destroy(playerToDestroy, 0.5f);
                 GameManagerSlither.instance.players.Remove(userSessionId);
+                Debug.Log("----- NakamaManager died event players count="+(GameManagerSlither.instance.players.Count));
+                Debug.Log("----- NakamaManager died event first key=" + (GameManagerSlither.instance.players.First().Key)+"::sessionID="+ GameManagerSlither.instance.localUser.SessionId);
 
                 // If there is only one player left and that us, announce the winner and start a new round.
                 if (GameManagerSlither.instance.players.Count == 1 && GameManagerSlither.instance.players.First().Key == GameManagerSlither.instance.localUser.SessionId)
                 {
-                    GameManagerSlither.instance.AnnounceWinner();//Srikanth
+                    GameManagerSlither.instance.Invoke("AnnounceWinner", 2);//Srikanth
 
                     //GameManagerSlither.instance.Invoke("openResultPage", 2);
                 }
                 break;
             case OpCodes.AnnounceWinner:
+                Debug.Log("----- NakamaManager AnnounceWinner event");
+
                 // Display the winning player's name and begin a new round.
                 GameManagerSlither.instance.openResultPage(state["winnerID"]);//Srikanth
                 break;
@@ -175,6 +172,8 @@ public class NakamaManager : MonoBehaviour
                 StartCoroutine(GameManagerSlither.instance.SpawnPlayer(2, currentMatch.Id, matchState.UserPresence));//Srikanth
                 break;
             case OpCodes.NewRound:
+                Debug.Log("----- NakamaManager NewRound event");
+
                 // Display the winning player's name and begin a new round.
                 //await AnnounceWinnerAndRespawn(state["winningPlayerName"]);//Srikanth
                 GameManagerSlither.instance.restartPlayersCount++;

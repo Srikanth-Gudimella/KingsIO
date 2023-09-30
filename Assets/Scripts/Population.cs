@@ -139,11 +139,12 @@ public class Population : MonoBehaviour
     public GameObject SpawnSnake(int points,bool IsMyPlayer)
     {
         Debug.Log("SpawnSnake 111111");
-        Transform spwanPointt = spawnPoses[Random.Range(0, spawnPoses.Count)];
-        if (spwanPointt == null)
-        {
-            spwanPointt = snakePrefab.transform;
-        }
+        //Transform spwanPointt = spawnPoses[Random.Range(0, spawnPoses.Count)];
+        //Vector3 randomSpawnCircle = new Vector3(Random.Range(-Population.instance.RangeX, Population.instance.RangeX), 0, Random.Range(-Population.instance.RangeZ, Population.instance.RangeZ));
+        //if (spwanPointt == null)
+        //{
+        //    spwanPointt = snakePrefab.transform;
+        //}
         Debug.Log("SpawnSnake 2222222");
 
         //		Vector3 randomSpawnCircle = new Vector3(Random.Range(-Population.instance.RangeX,Population.instance.RangeX), 0, Random.Range(-Population.instance.RangeZ,Population.instance.RangeZ));
@@ -170,10 +171,12 @@ public class Population : MonoBehaviour
             //			Debug.LogError ("-----new snake spawn");
             if(IsMyPlayer)
             {
+                Debug.Log("-------- Instantiate localplayerprefab");
                 newsnake = (GameObject)Instantiate(NetworkLocalPlayerPrefab, randomSpawnCircle, snakePrefab.transform.rotation);
             }
             else
             {
+                Debug.Log("-------- Instantiate remoteplayerprefab");
                 newsnake = (GameObject)Instantiate(NetworkRemotePlayerPrefab, randomSpawnCircle, snakePrefab.transform.rotation);
 
                 //newsnake.GetComponent<PlayerNetworkRemoteSync>().NetworkData = new RemotePlayerNetworkData
@@ -198,6 +201,8 @@ public class Population : MonoBehaviour
             //            Vector3 randomSpawnCircle = new Vector3(Random.Range(-Population.instance.RangeX, Population.instance.RangeX), newsnake.transform.position.y, Random.Range(-Population.instance.RangeZ, Population.instance.RangeZ));//srikanth commented
             newsnake.transform.position = randomSpawnCircle;
             snakeparams.addPointsOnFoodForPlayer(points);
+            Debug.LogError("------------- Snake isPlayerSet IsMyPlayer="+IsMyPlayer);
+
             snakeparams.isPlayer = IsMyPlayer;
             snakeparams.SnakeHead.IsPlayer = IsMyPlayer;
         }

@@ -58,7 +58,7 @@ public class ResumePage : MonoBehaviour {
 	}
 	void OpenGameOverPage()
 	{
-		ResultPage.mee.Open ();
+		//ResultPage.mee.Open ();
 		Close ();
 	}
 	void animateWatchBtn()
@@ -106,6 +106,6 @@ public class ResumePage : MonoBehaviour {
 	{
 		Debug.Log ("NoThanksClick");
 		iTween.Stop (gameObject);
-		ResultPage.mee.Open ();
+		//ResultPage.mee.Open ();
 	}
 }

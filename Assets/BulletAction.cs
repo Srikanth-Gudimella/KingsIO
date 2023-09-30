@@ -34,7 +34,7 @@ public class BulletAction : MonoBehaviour {
 //	}
 	void OnTriggerEnter(Collider obj)
 	{
-			//Debug.Log("bullet hit tag="+obj.tag);
+			Debug.Log("bullet hit tag="+obj.tag+"::name="+obj.gameObject.name);
 		if (obj.CompareTag ("Snake")) {
 			//Debug.Log("bullet hit 1111");
 			PoolingSystem.DestroyAPS(gameObject);

@@ -136,6 +136,7 @@ public class PlayerNetworkRemoteSync : MonoBehaviour
                 SetInputFromState(matchState.State);
                 break;
             case OpCodes.Died:
+                Debug.Log("----- remote player died event");
                 //playerMovementController.PlayDeathAnimation();//Srikanth
                 ThisSnake.PlayerDeathAnimation();
 

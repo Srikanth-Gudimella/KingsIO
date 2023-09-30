@@ -48,6 +48,7 @@ public class Snake : MonoBehaviour
 	public float strength;
 	public GameObject healthFillBar;
 	public GameObject[] HeadObjs;
+    public GameObject DeathParticles;
     public void addPointsOnFoodForPlayer(int _points)
     {		
 		
@@ -114,13 +115,13 @@ public class Snake : MonoBehaviour
         for (int i = 0; i < HeadObjs.Length; i++) {
 			HeadObjs [i].SetActive (false);
 		}
-		
+        DeathParticles.SetActive(false);
     }
     public int mySnakeRenderIndexInAllSnakes = 0;
 
     void Start()
     {
-        Debug.LogError("---- Snake Start");
+        Debug.LogError("------------- Snake Start 11111 isPlayer="+isPlayer);
         //if (isPlayer)
         //{
         //    //			GameManagerSlither.selectedSnakeIndex = 13;
@@ -170,7 +171,7 @@ public class Snake : MonoBehaviour
         //			{
         //				checkNAddPart ();
         //			}
-        strength = 100;
+        strength = 20;
 
         nakamaManager = GameObject.FindGameObjectWithTag("NakamaManager").GetComponent<NakamaManager>();
 
@@ -196,8 +197,9 @@ public class Snake : MonoBehaviour
         originalSpeedMultiplier = speedMultiplier;
 
 
-
-        isPlayer = SnakeHead.IsPlayer;
+        Debug.LogError("------------- Snake Start 22222 isPlayer=" + isPlayer+ "::SnakeHead.IsPlayer="+ SnakeHead.IsPlayer);
+        SnakeHead.IsPlayer = isPlayer;
+        //isPlayer = SnakeHead.IsPlayer;
         if (isPlayer)
         {
             if (player != null)
@@ -216,10 +218,10 @@ public class Snake : MonoBehaviour
         //		GetARandomTemplate();
         GameManagerSlither.instance.playersListLB.Add(gameObject);
         
-            if (isPlayer == false)
-                name = playerName;
-            else
-                name = "MyPlayer";
+            //if (isPlayer == false)
+            //    name = playerName;
+            //else
+            //    name = "MyPlayer";
 
 
 		Population.instance.snakesIndex++;
@@ -709,15 +711,19 @@ public class Snake : MonoBehaviour
 			BGSoundManager.Instance.StopPlaying ();
 //			gameObject.SetActive(false);
 			AudioClipManager.Instance.Play (InGameSounds.ResultPage);
-//			if (GameManagerSlither.instance.IsEnableWatchVideoToResume && !GameManagerSlither.instance.IsPauseYesClicked) {
-//				GameManagerSlither.instance.isPlayerBlasted = true;
-//				GameManagerSlither.instance.destroyPlayer ();
-//				ResumePage.instance.Invoke ("Open", 2);
-////				ResumePage.instance.Open ();
-//				GameManagerSlither.instance.IsEnableWatchVideoToResume = false;
-//			} else {
-			GameManagerSlither.instance.destroyPlayer ();//this is death animation or replace it
-            OnLocalPlayerDied();
+            //			if (GameManagerSlither.instance.IsEnableWatchVideoToResume && !GameManagerSlither.instance.IsPauseYesClicked) {
+            //				GameManagerSlither.instance.isPlayerBlasted = true;
+            //				GameManagerSlither.instance.destroyPlayer ();
+            //				ResumePage.instance.Invoke ("Open", 2);
+            ////				ResumePage.instance.Open ();
+            //				GameManagerSlither.instance.IsEnableWatchVideoToResume = false;
+            //			} else {
+            SnakeHead.gameObject.SetActive(false);
+            DeathParticles.transform.position = SnakeHead.gameObject.transform.position;
+            DeathParticles.SetActive(true);
+			//GameManagerSlither.instance.destroyPlayer ();//this is death animation or replace it
+            //OnLocalPlayerDied();
+            Invoke(nameof(OnLocalPlayerDied), 1);
             //Destroy(player, 0.5f);
 
            // GameManagerSlither.instance.Invoke("openResultPage", 2);
@@ -740,8 +746,9 @@ public class Snake : MonoBehaviour
     {
         // Send a network message telling everyone that we died.
 
-     
+        WaitForOtherPlayersPop.Instane.Open();
 
+        Debug.LogError("---- OnLocalPlayerDied Died event call");
         await nakamaManager.SendMatchStateAsync(OpCodes.Died, MatchDataJson.Died(player.transform.position));
 
         // Remove ourself from the players array and destroy our GameObject after 0.5 seconds.
@@ -836,7 +843,13 @@ public class Snake : MonoBehaviour
     }
     public void PlayerDeathAnimation()
     {
-        GameManagerSlither.instance.destroyPlayer();//this is remote player die animation
+        Debug.LogError("--- Player Death Animation");
+        //GameManagerSlither.instance.destroyPlayer();//this is remote player die animation
+        SnakeHead.gameObject.SetActive(false);
+        DeathParticles.transform.position = SnakeHead.gameObject.transform.position;
+        DeathParticles.SetActive(true);
+        Destroy(this.gameObject, 1.5f);
+
     }
     public void setBulletType()
 	{

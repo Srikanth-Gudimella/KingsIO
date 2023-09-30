@@ -278,16 +278,16 @@ public class GameManagerSlither : MonoBehaviour
 
         //OnPlayButton();
 
-  //      mainMenuCanvas.SetActive(false);
-  //      playerSnake.SetActive(true);
-  //      playerSnake.GetComponent<Snake>().ShowPlayerName();
-  //      Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
-		//Debug.LogError("---- check randotemplate call");
-  //      MysnakeComponent.GetARandomTemplate();
-  //      playerSnake.GetComponent<Snake>().ShowPlayerName();
-  //      CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
-  //      snakeHeadObj = playerSnake.GetComponent<Snake>().SnakeHead.gameObject;
-  //      body = snakeHeadObj.GetComponent<Rigidbody>();
+        //mainMenuCanvas.SetActive(false);
+        //playerSnake.SetActive(true);
+        //playerSnake.GetComponent<Snake>().ShowPlayerName();
+        //Snake MysnakeComponent = playerSnake.GetComponent<Snake>();
+        //Debug.LogError("---- check randotemplate call");
+        //MysnakeComponent.GetARandomTemplate();
+        //playerSnake.GetComponent<Snake>().ShowPlayerName();
+        //CameraManager.setMySnakeAsPlayer(MysnakeComponent, MysnakeComponent.SnakeHead.gameObject);
+        //snakeHeadObj = playerSnake.GetComponent<Snake>().SnakeHead.gameObject;
+        //body = snakeHeadObj.GetComponent<Rigidbody>();
 
     }
 	void OpenControlsPage()
@@ -559,7 +559,7 @@ public class GameManagerSlither : MonoBehaviour
 	public IEnumerator SpawnPlayer(float delayTime,string matchId, IUserPresence user, int spawnIndex = -1)
 	{
 		yield return new WaitForSeconds(delayTime);
-		Debug.LogError("------ SpawnPlayer 111111");
+		Debug.LogError("------ SpawnPlayer 111111 userid="+user.SessionId+"--- localusersessionid="+localUser.SessionId);
 		if (players.ContainsKey(user.SessionId))
 		{
 			yield break;
@@ -676,7 +676,7 @@ public class GameManagerSlither : MonoBehaviour
 		// However, as explained below in the SetDisplayName method, when testing/debugging locally we would get the same name for all clients.
 		// So instead we will just use a private variable.
 		var winnerID = localUser.SessionId;
-
+		Debug.LogError("----- WinnerID="+winnerID);
 		// Send a network message telling everyone else that we won.
 		await NakamaManager.Instance.SendMatchStateAsync(OpCodes.AnnounceWinner, MatchDataJson.AnnounceWiner(winnerID));
 
@@ -689,14 +689,26 @@ public class GameManagerSlither : MonoBehaviour
 
     public void openResultPage(string winnerID)
     {
+		Debug.LogError("---- OpenResultPage 1111 winnerID="+winnerID);
+		if(localUser!=null)
+        {
+			Debug.LogError("-- openResultPage localuserID="+localUser.SessionId);
+        }
+		else
+        {
+			Debug.LogError("-- openResultPage localuser null");
+
+		}
 		if (IsOpenResultPageCalled)
 			return;
+		Debug.LogError("---- OpenResultPage 2222");
+
 		Population.instance.resetPopulationOnDie();
-        int prevBestScore = PlayerPrefs.GetInt(StoreManager.Best_Score, 0);
-        if (prevBestScore < playerSnake.GetComponent<Snake>().getPoints())
-        {
-            PlayerPrefs.SetInt(StoreManager.Best_Score, playerSnake.GetComponent<Snake>().getPoints());
-        }
+        //int prevBestScore = PlayerPrefs.GetInt(StoreManager.Best_Score, 0);
+        //if (prevBestScore < playerSnake.GetComponent<Snake>().getPoints())
+        //{
+        //    PlayerPrefs.SetInt(StoreManager.Best_Score, playerSnake.GetComponent<Snake>().getPoints());
+        //}
 
 //        levelNumber++;
 //        PlayerPrefs.SetInt("playedCount", levelNumber);
@@ -712,7 +724,8 @@ public class GameManagerSlither : MonoBehaviour
         cameFromPlayArea = true;
         pausePop.SetActive(false);
 		IsOpenResultPageCalled = true;
-        ResultPage.mee.Open();
+		bool IsWinner = winnerID == localUser.SessionId ? true : false;
+        ResultPage.mee.Open(IsWinner);
 
 		players.Remove(localUser.SessionId);
 		keysToRemove.Remove(localUser.SessionId);
@@ -739,6 +752,7 @@ public class GameManagerSlither : MonoBehaviour
 			if(thisOj!=null)
 			Destroy(thisOj);
 		}
+		PlayerHeadIndexs.Clear();
 
 
 		//		Application.LoadLevel ("Menu");
@@ -896,7 +910,8 @@ public class GameManagerSlither : MonoBehaviour
 	}
 	public LayerMask otherPlayerMask;
 	int repeatCount=0;
-
+	public int TotalPlayersCount;
+	public string LocalPlayerName;
 	void generatePos()
 	{
 		GameObject myPlayer = null;
@@ -929,23 +944,39 @@ public class GameManagerSlither : MonoBehaviour
 		}
 
 	}
-	public void RestartGame()
+    public void Init()
     {
-		if(restartPlayersCount==2)
+		//restartPlayersCount = 0;
+		IsOpenResultPageCalled = false;
+	}
+    public void RestartGame()
+    {
+		Debug.LogError("---- Restart Game count=" + restartPlayersCount);
+		//IsOpenResultPageCalled = false;
+
+		if (restartPlayersCount== TotalPlayersCount)
         {
 			Debug.LogError("---- restart game");
+			restartPlayersCount = 0;
 			AudioClipManager.Instance.Play(InGameSounds.Button);
 
 			System.GC.Collect();
 			keysToRemove.Clear();
+			StartCoroutine(GeneratePlayerRandomHeadIndex(1, localUser));//Srikanth
 			StartCoroutine(SpawnPlayer(2, NakamaManager.Instance.currentMatch.Id, localUser));
 
 			Debug.Log("--- localPlayer="+localPlayer);
 			// Tell everyone where we respawned.
-			NakamaManager.Instance.SendMatchState(OpCodes.Respawned, MatchDataJson.Respawned(localPlayer.transform.position));
-			isPlayerBlasted = false;
-			ResultPage.mee.gameObject.SetActive(false);
 
+			Invoke(nameof(RespawnCall), 2.1f);
 		}
+	}
+	void RespawnCall()
+    {
+		NakamaManager.Instance.SendMatchState(OpCodes.Respawned, MatchDataJson.Respawned(localPlayer.transform.position));
+		isPlayerBlasted = false;
+		ResultPage.mee.gameObject.SetActive(false);
+		ConnectingPopHandler.Instance.Close();
+
 	}
 }

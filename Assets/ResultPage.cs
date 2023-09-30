@@ -8,6 +8,7 @@ public class ResultPage : MonoBehaviour {
 	public static ResultPage mee;
 	public GameObject popUp,nextBtn,rateBtn,shareBtn,retryBtn;
 	public GameObject moreGamesImg,title;
+	public Text LvlWinTxt;
 //	public GameObject inviteBtn;
 	void Awake()
 	{
@@ -15,25 +16,38 @@ public class ResultPage : MonoBehaviour {
 		gameObject.SetActive (false);
 	}
 
-	public void Open()
+	public void Open(bool IsWin)
 	{
-//		AudioClipManager.Instance.Play (InGameSounds.ResultPage);
+		Debug.LogError("---- Result Page Open");
+		WaitForOtherPlayersPop.Instane.Close();
+		//		AudioClipManager.Instance.Play (InGameSounds.ResultPage);
 		gameObject.SetActive (true);
-        //btm2018
-        /*
+		nextBtn.GetComponent<Button>().interactable = true;
+		if(IsWin)
+        {
+			LvlWinTxt.text = "YOU WON";
+
+		}
+		else
+        {
+			LvlWinTxt.text = "YOU LOSS";
+
+		}
+		//btm2018
+		/*
 		if (!GameManagerSlither.isOfflineMode) {
 			PhotonNetwork.LeaveRoom ();
 			PhotonNetwork.Disconnect ();
 		}*/
-        //		if (GirlGameConfigs.mee != null && GirlGameConfigs.moreIcon != null) {
-        //			moreGamesImg.SetActive (true);
-        //			moreGamesImg.GetComponent<Image> ().sprite = GirlGameConfigs.moreIcon;
-        ////			title.transform.localPosition = new Vector3 (0, 174, 0);
-        //		} else {
-        //			moreGamesImg.SetActive (false);
-        ////			title.transform.localPosition = new Vector3 (0, 125, 0);
-        //		}
-        gameObject.transform.localPosition = Vector3.zero;
+		//		if (GirlGameConfigs.mee != null && GirlGameConfigs.moreIcon != null) {
+		//			moreGamesImg.SetActive (true);
+		//			moreGamesImg.GetComponent<Image> ().sprite = GirlGameConfigs.moreIcon;
+		////			title.transform.localPosition = new Vector3 (0, 174, 0);
+		//		} else {
+		//			moreGamesImg.SetActive (false);
+		////			title.transform.localPosition = new Vector3 (0, 125, 0);
+		//		}
+		gameObject.transform.localPosition = Vector3.zero;
 
 		sizeCount.text = (GameManagerSlither.instance.myScore-200)+"";
 		enemiesCollectedCount.text = GameManagerSlither.instance.enemiesKilledCount+"";
@@ -134,6 +148,9 @@ public class ResultPage : MonoBehaviour {
 	}
 	public void ReStartClick()
     {
+		nextBtn.GetComponent<Button>().interactable = false;
+		ConnectingPopHandler.Instance.Open();
+		GameManagerSlither.instance.Init();
 		GameManagerSlither.instance.restartPlayersCount++;
 		NakamaManager.Instance.SendMatchState(
 			   OpCodes.NewRound,

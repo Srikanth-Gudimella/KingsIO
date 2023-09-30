@@ -131,7 +131,13 @@ public class SnakeHead : MonoBehaviour
 			snakeParameters.isCollideWithObstacle = true;
 			dir = (transform.position - obj.transform.position);
         }
-    }
+		else if (obj.CompareTag("EndPath"))
+		{
+
+			snakeParameters.isEnableMovement = false;
+			dir = (transform.position - obj.transform.position);
+		}
+	}
     Vector3 dir;
     private GameObject directionObj;
     void OnTriggerExit(Collider obj)
@@ -148,8 +154,13 @@ public class SnakeHead : MonoBehaviour
 			snakeParameters.isEnableMovement = true;
 			snakeParameters.isCollideWithObstacle = false;
         }
+		else if (obj.CompareTag("EndPath"))
+		{
+			directionObj = null;
+			snakeParameters.isEnableMovement = true;
+		}
 
-    }
+	}
 	public void EndPathHitEnter()
 	{
 		snakeParameters.isEnableMovement = false;

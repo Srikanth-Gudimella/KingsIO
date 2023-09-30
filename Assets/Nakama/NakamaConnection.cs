@@ -115,7 +115,7 @@ public class NakamaConnection : ScriptableObject
         };
 
         // Add this client to the matchmaking pool and get a ticket.
-        var matchmakerTicket = await Socket.AddMatchmakerAsync("+properties.engine:unity", minPlayers, minPlayers, matchmakingProperties);
+        var matchmakerTicket = await Socket.AddMatchmakerAsync("+properties.engine:unity", minPlayers, GameManagerSlither.instance.TotalPlayersCount, matchmakingProperties);
         currentMatchmakingTicket = matchmakerTicket.Ticket;
     }
 
